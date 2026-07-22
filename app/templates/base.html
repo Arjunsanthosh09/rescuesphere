@@ -1,0 +1,1883 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      RescueSphere — Smart Disaster Response & Resource Allocation System
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Malayalam:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --white: #ffffff;
+        --surface: #f5f8fb;
+        --surface-2: #eef3f8;
+        --ink: #0e2340;
+        --primary: #1b4b91;
+        --primary-dark: #123869;
+        --accent: #e4572e;
+        --amber: #f2a93b;
+        --text-muted: #5c6b7a;
+        --border: #e1e8f0;
+        --radius: 14px;
+        --font-display: "Space Grotesk", "Noto Sans Malayalam", sans-serif;
+        --font-body: "Inter", "Noto Sans Malayalam", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: var(--font-body);
+        color: var(--ink);
+        background: var(--white);
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+      [lang-ml] {
+        font-family: "Noto Sans Malayalam", "Inter", sans-serif;
+      }
+      img {
+        max-width: 100%;
+        display: block;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      ul {
+        list-style: none;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--font-display);
+        font-weight: 700;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+      }
+      .container {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 28px;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--primary);
+        background: rgba(27, 75, 145, 0.08);
+        padding: 6px 14px;
+        border-radius: 100px;
+        margin-bottom: 16px;
+      }
+      .eyebrow .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: pulse-dot 1.6s infinite;
+      }
+      @keyframes pulse-dot {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(0.8);
+        }
+      }
+
+      /* ---------- HEADER ---------- */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 76px;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 20px;
+        color: var(--ink);
+      }
+      .logo-mark {
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+      }
+      nav.links {
+        display: flex;
+        gap: 32px;
+        font-size: 14.5px;
+        font-weight: 600;
+        color: var(--text-muted);
+      }
+      nav.links a:hover {
+        color: var(--primary);
+      }
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .lang-toggle {
+        display: flex;
+        border: 1px solid var(--border);
+        border-radius: 100px;
+        overflow: hidden;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .lang-toggle button {
+        padding: 7px 14px;
+        background: var(--white);
+        color: var(--text-muted);
+        border: none;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .lang-toggle button.active {
+        background: var(--primary);
+        color: var(--white);
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 11px 22px;
+        border-radius: 9px;
+        font-weight: 600;
+        font-size: 14.5px;
+        cursor: pointer;
+        border: none;
+        transition: 0.2s;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: var(--white);
+      }
+      .btn-primary:hover {
+        background: var(--primary-dark);
+      }
+      .btn-accent {
+        background: var(--accent);
+        color: var(--white);
+      }
+      .btn-accent:hover {
+        background: #c8461f;
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--border);
+      }
+      .btn-ghost:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      /* ---------- HERO ---------- */
+      .hero {
+        position: relative;
+        padding: 88px 0 100px;
+        overflow: hidden;
+        background: linear-gradient(180deg, #fbfdff 0%, var(--white) 60%);
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 56px;
+        align-items: center;
+      }
+      .hero h1 {
+        font-size: clamp(34px, 4.6vw, 52px);
+        line-height: 1.08;
+        margin-bottom: 20px;
+      }
+      .hero h1 .hl {
+        color: var(--primary);
+      }
+      .hero p.lead {
+        font-size: 17px;
+        color: var(--text-muted);
+        max-width: 520px;
+        margin-bottom: 32px;
+      }
+      .hero-ctas {
+        display: flex;
+        gap: 14px;
+        margin-bottom: 44px;
+        flex-wrap: wrap;
+      }
+      .hero-stats {
+        display: flex;
+        gap: 36px;
+        flex-wrap: wrap;
+      }
+      .hero-stats .stat-num {
+        font-family: var(--font-display);
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--ink);
+      }
+      .hero-stats .stat-label {
+        font-size: 12.5px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: 2px;
+      }
+
+      /* Signature radar visual */
+      .radar-card {
+        position: relative;
+        background: var(--ink);
+        border-radius: 20px;
+        padding: 26px;
+        box-shadow: 0 30px 60px -20px rgba(14, 35, 64, 0.35);
+      }
+      .radar-card .radar-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        color: #fff;
+      }
+      .radar-card .radar-head .live {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #9fd3b0;
+      }
+      .radar-card .radar-head .live .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #4ade80;
+        animation: pulse-dot 1.4s infinite;
+      }
+      .radar-box {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1/0.82;
+        border-radius: 14px;
+        overflow: hidden;
+        background: radial-gradient(circle at 50% 50%, #16305a 0%, #0e2340 70%);
+      }
+      .radar-ring {
+        position: absolute;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .radar-sweep {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 50%;
+        height: 2px;
+        transform-origin: left center;
+        background: linear-gradient(
+          90deg,
+          rgba(74, 222, 128, 0.9),
+          rgba(74, 222, 128, 0)
+        );
+        animation: sweep 4s linear infinite;
+      }
+      @keyframes sweep {
+        from {
+          transform: translateY(-50%) rotate(0deg);
+        }
+        to {
+          transform: translateY(-50%) rotate(360deg);
+        }
+      }
+      .incident-ping {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .incident-ping::after {
+        content: "";
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        border: 2px solid currentColor;
+        opacity: 0.6;
+        animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+      }
+      @keyframes ping {
+        0% {
+          transform: scale(0.6);
+          opacity: 0.8;
+        }
+        100% {
+          transform: scale(2.2);
+          opacity: 0;
+        }
+      }
+      .radar-legend {
+        display: flex;
+        gap: 18px;
+        margin-top: 14px;
+        font-size: 12px;
+        color: #b9c6d6;
+      }
+      .radar-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+
+      /* ---------- SECTION shared ---------- */
+      section {
+        padding: 88px 0;
+      }
+      .section-head {
+        max-width: 640px;
+        margin: 0 auto 52px;
+        text-align: center;
+      }
+      .section-head h2 {
+        font-size: clamp(26px, 3vw, 36px);
+        margin-bottom: 14px;
+      }
+      .section-head p {
+        color: var(--text-muted);
+        font-size: 16px;
+      }
+      .bg-surface {
+        background: var(--surface);
+      }
+
+      /* ---------- PROBLEM / LIMITATIONS ---------- */
+      .problem-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        align-items: start;
+      }
+      .problem-col h3 {
+        font-size: 19px;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .tag-bad {
+        background: #fdecea;
+        color: var(--accent);
+      }
+      .tag-good {
+        background: #e9f3ec;
+        color: #1e8e5a;
+      }
+      .tag {
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .check-list li {
+        display: flex;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 15px;
+        color: var(--ink);
+      }
+      .check-list li:last-child {
+        border-bottom: none;
+      }
+      .check-list .ico {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        margin-top: 2px;
+      }
+
+      /* ---------- MODULES ---------- */
+      .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 26px;
+      }
+      .module-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 30px 26px;
+        transition: 0.25s;
+        position: relative;
+        overflow: hidden;
+      }
+      .module-card:hover {
+        box-shadow: 0 20px 40px -22px rgba(14, 35, 64, 0.25);
+        transform: translateY(-4px);
+        border-color: transparent;
+      }
+      .module-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 18px;
+      }
+      .module-card h3 {
+        font-size: 19px;
+        margin-bottom: 8px;
+      }
+      .module-card .role-tag {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 14px;
+        display: block;
+      }
+      .module-card ul {
+        margin-top: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .module-card ul li {
+        font-size: 14px;
+        color: var(--text-muted);
+        display: flex;
+        gap: 9px;
+        align-items: flex-start;
+      }
+      .module-card ul li::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--primary);
+        margin-top: 7px;
+        flex-shrink: 0;
+      }
+      .module-card .card-login-btn {
+        margin-top: 22px;
+        width: 100%;
+      }
+
+      /* ---------- FEATURES ---------- */
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+      }
+      .feature-card {
+        padding: 26px;
+        border-radius: var(--radius);
+        background: var(--white);
+        border: 1px solid var(--border);
+      }
+      .feature-card .f-icon {
+        width: 42px;
+        height: 42px;
+        margin-bottom: 16px;
+      }
+      .feature-card h4 {
+        font-size: 16.5px;
+        margin-bottom: 8px;
+      }
+      .feature-card p {
+        font-size: 14px;
+        color: var(--text-muted);
+      }
+
+      /* ---------- WORKFLOW ---------- */
+      .flow {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0;
+        position: relative;
+      }
+      .flow::before {
+        content: "";
+        position: absolute;
+        top: 22px;
+        left: 6%;
+        right: 6%;
+        height: 1px;
+        background: var(--border);
+        z-index: 0;
+      }
+      .flow-step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        padding: 0 10px;
+      }
+      .flow-step .fnum {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--white);
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        font-family: var(--font-display);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+      }
+      .flow-step h4 {
+        font-size: 15px;
+        margin-bottom: 6px;
+      }
+      .flow-step p {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+
+      /* ---------- CTA BAND ---------- */
+      .cta-band {
+        background: var(--ink);
+        border-radius: 24px;
+        padding: 60px 50px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+        color: #fff;
+      }
+      .cta-band h2 {
+        color: #fff;
+        font-size: 28px;
+        margin-bottom: 8px;
+      }
+      .cta-band p {
+        color: #b9c6d6;
+        font-size: 15px;
+      }
+
+      /* ---------- FOOTER ---------- */
+      footer {
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        padding: 56px 0 28px;
+      }
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 40px;
+      }
+      .footer-grid h5 {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        margin-bottom: 16px;
+      }
+      .footer-grid ul li {
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+      .footer-grid ul li a:hover {
+        color: var(--primary);
+      }
+      .footer-bottom {
+        border-top: 1px solid var(--border);
+        padding-top: 24px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        color: var(--text-muted);
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      /* ---------- MODAL / AUTH ---------- */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(14, 35, 64, 0.55);
+        backdrop-filter: blur(3px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 20px;
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .auth-modal {
+        background: var(--white);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 460px;
+        max-height: 92vh;
+        overflow-y: auto;
+        box-shadow: 0 40px 80px -20px rgba(14, 35, 64, 0.4);
+        position: relative;
+      }
+      .auth-close {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--surface);
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .auth-close:hover {
+        background: var(--surface-2);
+      }
+      .auth-header {
+        padding: 32px 32px 0;
+      }
+      .auth-header h3 {
+        font-size: 21px;
+        margin-bottom: 6px;
+      }
+      .auth-header p {
+        font-size: 13.5px;
+        color: var(--text-muted);
+      }
+      .auth-body {
+        padding: 24px 32px 32px;
+      }
+      .field {
+        margin-bottom: 16px;
+      }
+      .field label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: var(--ink);
+      }
+      .field input,
+      .field select {
+        width: 100%;
+        padding: 11px 13px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--ink);
+      }
+      .field input:focus,
+      .field select:focus {
+        outline: 2px solid var(--primary);
+        outline-offset: 1px;
+        border-color: var(--primary);
+      }
+      .auth-submit {
+        width: 100%;
+        padding: 13px;
+        margin-top: 6px;
+        font-size: 15px;
+      }
+      .admin-note {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+        font-size: 13px;
+        color: var(--text-muted);
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .helper-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        margin-top: 14px;
+        color: var(--text-muted);
+      }
+      .helper-row a {
+        color: var(--primary);
+        font-weight: 600;
+      }
+      .register-link {
+        text-align: center;
+        margin-top: 12px;
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+      .register-link a {
+        color: var(--primary);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      @media (max-width: 900px) {
+        nav.links {
+          display: none;
+        }
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+        .problem-grid,
+        .modules-grid,
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+        .flow {
+          flex-direction: column;
+          gap: 24px;
+        }
+        .flow::before {
+          display: none;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .cta-band {
+          flex-direction: column;
+          text-align: center;
+          padding: 40px 26px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ================= HEADER ================= -->
+    <header>
+      <div class="container nav-wrap">
+        <div class="logo">
+          <svg class="logo-mark" viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="19" stroke="#1B4B91" stroke-width="2" />
+            <path
+              d="M20 8 L20 32 M8 20 L32 20"
+              stroke="#1B4B91"
+              stroke-width="2"
+            />
+            <circle cx="20" cy="20" r="6" fill="#E4572E" />
+          </svg>
+          <span data-i18n="brand">RescueSphere</span>
+        </div>
+        <nav class="links">
+          <a href="#modules" data-i18n="nav_modules">Modules</a>
+          <a href="#features" data-i18n="nav_features">Features</a>
+          <a href="#how" data-i18n="nav_how">How it works</a>
+          <a href="#" onclick="openAuth()" data-i18n="nav_report"
+            >Report an emergency</a
+          >
+          <!-- Changed href="#report" to href="#" onclick="openAuth()" -->
+        </nav>
+        <div class="nav-right">
+          <div class="lang-toggle">
+            <button id="lang-en" class="active" onclick="setLang('en')">
+              EN
+            </button>
+            <button id="lang-ml" onclick="setLang('ml')">മല</button>
+          </div>
+          <button
+            class="btn btn-ghost"
+            onclick="openAuth()"
+            data-i18n="nav_login"
+          >
+            Log in
+          </button>
+          <!-- REMOVED THE "Report Emergency" BUTTON FROM HERE -->
+        </div>
+      </div>
+    </header>
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="report">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">
+            <span class="dot"></span>
+            <span data-i18n="hero_eyebrow"
+              >Live disaster coordination platform</span
+            >
+          </div>
+          <h1 data-i18n="hero_h1">
+            When every minute matters,
+            <span class="hl">coordination saves lives.</span>
+          </h1>
+          <p class="lead" data-i18n="hero_lead">
+            RescueSphere connects citizens, rescue teams, and disaster
+            management authorities on one real-time platform — from the first
+            emergency report to the last rescue update.
+          </p>
+          <div class="hero-ctas">
+            <button
+              class="btn btn-accent"
+              onclick="openAuth()"
+              data-i18n="hero_cta1"
+            >
+              Report an emergency
+            </button>
+            <button
+              class="btn btn-primary"
+              onclick="openAuth()"
+              data-i18n="hero_cta2"
+            >
+              Login to RescueSphere
+            </button>
+            <button
+              class="btn btn-ghost"
+              onclick="openAuth()"
+              data-i18n="hero_cta3"
+            >
+              Sign in
+            </button>
+          </div>
+          <div class="hero-stats">
+            <div>
+              <div class="stat-num">24/7</div>
+              <div class="stat-label" data-i18n="stat1">
+                Incident monitoring
+              </div>
+            </div>
+            <div>
+              <div class="stat-num">3</div>
+              <div class="stat-label" data-i18n="stat2">
+                Connected user roles
+              </div>
+            </div>
+            <div>
+              <div class="stat-num">&lt;1 min</div>
+              <div class="stat-label" data-i18n="stat3">
+                Report-to-alert time
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="radar-card">
+          <div class="radar-head">
+            <span
+              data-i18n="radar_title"
+              style="font-family: var(--font-display); font-weight: 600"
+              >Live Incident Radar</span
+            >
+            <span class="live"
+              ><span class="dot"></span>
+              <span data-i18n="radar_live">Live</span></span
+            >
+          </div>
+          <div class="radar-box" id="radarBox">
+            <div class="radar-ring" style="width: 30%; height: 30%"></div>
+            <div class="radar-ring" style="width: 60%; height: 60%"></div>
+            <div class="radar-ring" style="width: 90%; height: 90%"></div>
+            <div class="radar-sweep"></div>
+            <div
+              class="incident-ping"
+              style="top: 30%; left: 60%; background: #e4572e; color: #e4572e"
+            ></div>
+            <div
+              class="incident-ping"
+              style="top: 62%; left: 38%; background: #f2a93b; color: #f2a93b"
+            ></div>
+            <div
+              class="incident-ping"
+              style="top: 45%; left: 75%; background: #4ade80; color: #4ade80"
+            ></div>
+            <div
+              class="incident-ping"
+              style="top: 70%; left: 68%; background: #e4572e; color: #e4572e"
+            ></div>
+          </div>
+          <div class="radar-legend">
+            <span
+              ><span class="legend-dot" style="background: #e4572e"></span>
+              <span data-i18n="legend_critical">Critical</span></span
+            >
+            <span
+              ><span class="legend-dot" style="background: #f2a93b"></span>
+              <span data-i18n="legend_moderate">Moderate</span></span
+            >
+            <span
+              ><span class="legend-dot" style="background: #4ade80"></span>
+              <span data-i18n="legend_resolved">Resolved</span></span
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PROBLEM / SOLUTION ================= -->
+    <section class="bg-surface">
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="problem_h2">
+            Disaster response shouldn't depend on a phone call
+          </h2>
+          <p data-i18n="problem_p">
+            Traditional coordination is fragmented. RescueSphere replaces
+            scattered calls and manual tracking with one connected system.
+          </p>
+        </div>
+        <div class="problem-grid">
+          <div class="problem-col">
+            <h3>
+              <span class="tag tag-bad">!</span>
+              <span data-i18n="existing_title"
+                >Today, without RescueSphere</span
+              >
+            </h3>
+            <ul class="check-list">
+              <li data-i18n="lim1">
+                Delayed emergency reporting and communication
+              </li>
+              <li data-i18n="lim2">Manual, ad-hoc resource allocation</li>
+              <li data-i18n="lim3">No centralized disaster monitoring</li>
+              <li data-i18n="lim4">
+                Difficulty prioritizing critical incidents
+              </li>
+              <li data-i18n="lim5">Poor coordination among rescue teams</li>
+            </ul>
+          </div>
+          <div class="problem-col">
+            <h3>
+              <span class="tag tag-good">✓</span>
+              <span data-i18n="proposed_title">With RescueSphere</span>
+            </h3>
+            <ul class="check-list">
+              <li data-i18n="adv1">
+                Real-time disaster reporting with photos & GPS
+              </li>
+              <li data-i18n="adv2">
+                AI-assisted resource recommendation engine
+              </li>
+              <li data-i18n="adv3">
+                Centralized dashboard for every stakeholder
+              </li>
+              <li data-i18n="adv4">Automatic severity-based prioritization</li>
+              <li data-i18n="adv5">Optimized routes & live mission tracking</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MODULES ================= -->
+    <section id="modules">
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="modules_h2">One platform, three connected roles</h2>
+          <p data-i18n="modules_p">
+            Every user signs in from the same door — the system knows who you
+            are and shows you exactly what you need.
+          </p>
+        </div>
+        <div class="modules-grid">
+          <div class="module-card">
+            <div class="module-icon" style="background: #fdecea">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7Z"
+                  stroke="#E4572E"
+                  stroke-width="1.8"
+                />
+                <circle
+                  cx="12"
+                  cy="9"
+                  r="2.4"
+                  stroke="#E4572E"
+                  stroke-width="1.8"
+                />
+              </svg>
+            </div>
+            <span class="role-tag" data-i18n="mod1_tag"
+              >Public user · Self-registration</span
+            >
+            <h3 data-i18n="mod1_title">Citizen</h3>
+            <p
+              style="font-size: 14px; color: var(--text-muted)"
+              data-i18n="mod1_desc"
+            >
+              Report emergencies, share your live location, and track help as it
+              arrives.
+            </p>
+            <ul>
+              <li data-i18n="mod1_f1">Report incidents with photos & GPS</li>
+              <li data-i18n="mod1_f2">Track rescue team ETA & contact</li>
+              <li data-i18n="mod1_f3">Find nearby shelters & relief centers</li>
+              <li data-i18n="mod1_f4">Receive real-time alerts</li>
+            </ul>
+            <button
+              class="btn btn-accent card-login-btn"
+              onclick="openAuth()"
+              data-i18n="mod1_btn"
+            >
+              Login / Register
+            </button>
+          </div>
+
+          <div class="module-card">
+            <div class="module-icon" style="background: #e9f0fa">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 12h4l2-5 4 10 2-5h4"
+                  stroke="#1B4B91"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <span class="role-tag" data-i18n="mod2_tag"
+              >Responder · Admin-issued credentials</span
+            >
+            <h3 data-i18n="mod2_title">Rescue Team</h3>
+            <p
+              style="font-size: 14px; color: var(--text-muted)"
+              data-i18n="mod2_desc"
+            >
+              Accept missions, navigate optimized routes, and report outcomes
+              from the field.
+            </p>
+            <ul>
+              <li data-i18n="mod2_f1">View & accept nearby assignments</li>
+              <li data-i18n="mod2_f2">Navigate using optimized routes</li>
+              <li data-i18n="mod2_f3">Update mission & casualty status</li>
+              <li data-i18n="mod2_f4">Request additional resources</li>
+            </ul>
+            <button
+              class="btn btn-primary card-login-btn"
+              onclick="openAuth()"
+              data-i18n="mod2_btn"
+            >
+              Login
+            </button>
+          </div>
+
+          <div class="module-card">
+            <div class="module-icon" style="background: #fdf3e3">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect
+                  x="3"
+                  y="4"
+                  width="18"
+                  height="13"
+                  rx="2"
+                  stroke="#F2A93B"
+                  stroke-width="1.8"
+                />
+                <path
+                  d="M8 21h8M12 17v4"
+                  stroke="#F2A93B"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+            <span class="role-tag" data-i18n="mod3_tag"
+              >EOC staff · Provisioned account only</span
+            >
+            <h3 data-i18n="mod3_title">Administrator</h3>
+            <p
+              style="font-size: 14px; color: var(--text-muted)"
+              data-i18n="mod3_desc"
+            >
+              Full oversight of incidents, resources, teams, and disaster
+              analytics.
+            </p>
+            <ul>
+              <li data-i18n="mod3_f1">Monitor all incidents in real time</li>
+              <li data-i18n="mod3_f2">
+                Allocate personnel, vehicles & supplies
+              </li>
+              <li data-i18n="mod3_f3">
+                View heatmaps & disaster trend analytics
+              </li>
+              <li data-i18n="mod3_f4">Manage user accounts & permissions</li>
+            </ul>
+            <button
+              class="btn btn-ghost card-login-btn"
+              onclick="openAuth()"
+              data-i18n="mod3_btn"
+            >
+              Login
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FEATURES ================= -->
+    <section class="bg-surface" id="features">
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="features_h2">
+            Built-in intelligence, not just reporting
+          </h2>
+          <p data-i18n="features_p">
+            Advanced engines work quietly in the background so responders can
+            focus on the rescue.
+          </p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <svg class="f-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"
+                stroke="#1B4B91"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              />
+              <circle
+                cx="12"
+                cy="12"
+                r="3.4"
+                stroke="#E4572E"
+                stroke-width="1.8"
+              />
+            </svg>
+            <h4 data-i18n="feat1_h">Emergency Prioritization Engine</h4>
+            <p data-i18n="feat1_p">
+              Automatically ranks incidents by severity, people affected, and
+              location risk.
+            </p>
+          </div>
+          <div class="feature-card">
+            <svg class="f-icon" viewBox="0 0 24 24" fill="none">
+              <rect
+                x="3"
+                y="3"
+                width="7"
+                height="7"
+                rx="1.5"
+                stroke="#1B4B91"
+                stroke-width="1.8"
+              />
+              <rect
+                x="14"
+                y="3"
+                width="7"
+                height="7"
+                rx="1.5"
+                stroke="#1B4B91"
+                stroke-width="1.8"
+              />
+              <rect
+                x="3"
+                y="14"
+                width="7"
+                height="7"
+                rx="1.5"
+                stroke="#1B4B91"
+                stroke-width="1.8"
+              />
+              <rect
+                x="14"
+                y="14"
+                width="7"
+                height="7"
+                rx="1.5"
+                stroke="#1B4B91"
+                stroke-width="1.8"
+              />
+            </svg>
+            <h4 data-i18n="feat2_h">Resource Recommendation Engine</h4>
+            <p data-i18n="feat2_p">
+              Suggests optimal deployment of teams, vehicles, medical staff and
+              supplies.
+            </p>
+          </div>
+          <div class="feature-card">
+            <svg class="f-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M3 12h4l2 6 4-14 2 6h6"
+                stroke="#1B4B91"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <h4 data-i18n="feat3_h">Route Optimization</h4>
+            <p data-i18n="feat3_p">
+              Calculates the fastest, safest paths for rescue teams to reach
+              affected areas.
+            </p>
+          </div>
+          <div class="feature-card">
+            <svg class="f-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11Z"
+                stroke="#E4572E"
+                stroke-width="1.8"
+              />
+              <circle
+                cx="12"
+                cy="10"
+                r="2.4"
+                stroke="#E4572E"
+                stroke-width="1.8"
+              />
+            </svg>
+            <h4 data-i18n="feat4_h">Disaster Heatmaps</h4>
+            <p data-i18n="feat4_p">
+              Visualizes incident density and disaster intensity across affected
+              regions.
+            </p>
+          </div>
+          <div class="feature-card">
+            <svg class="f-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 19V9M10 19V5M16 19v-7M20 19H4"
+                stroke="#1B4B91"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              />
+            </svg>
+            <h4 data-i18n="feat5_h">Real-Time Analytics</h4>
+            <p data-i18n="feat5_p">
+              Tracks incident frequency, response times, and resource
+              utilization.
+            </p>
+          </div>
+          <div class="feature-card">
+            <svg class="f-icon" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M3 10 12 3l9 7"
+                stroke="#1B4B91"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M5 9v10h14V9"
+                stroke="#1B4B91"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <h4 data-i18n="feat6_h">Shelter & Relief Locator</h4>
+            <p data-i18n="feat6_p">
+              Shows nearby shelters, hospitals, and relief centers to affected
+              citizens.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= HOW IT WORKS ================= -->
+    <section id="how">
+      <div class="container">
+        <div class="section-head">
+          <h2 data-i18n="how_h2">From report to rescue</h2>
+          <p data-i18n="how_p">
+            A single flow connects everyone involved in the response.
+          </p>
+        </div>
+        <div class="flow">
+          <div class="flow-step">
+            <div class="fnum">1</div>
+            <h4 data-i18n="flow1_h">Report</h4>
+            <p data-i18n="flow1_p">
+              Citizen submits location, photos & details
+            </p>
+          </div>
+          <div class="flow-step">
+            <div class="fnum">2</div>
+            <h4 data-i18n="flow2_h">Prioritize</h4>
+            <p data-i18n="flow2_p">
+              System scores severity & urgency instantly
+            </p>
+          </div>
+          <div class="flow-step">
+            <div class="fnum">3</div>
+            <h4 data-i18n="flow3_h">Allocate</h4>
+            <p data-i18n="flow3_p">Admin assigns teams & resources</p>
+          </div>
+          <div class="flow-step">
+            <div class="fnum">4</div>
+            <h4 data-i18n="flow4_h">Respond</h4>
+            <p data-i18n="flow4_p">Rescue team navigates & updates status</p>
+          </div>
+          <div class="flow-step">
+            <div class="fnum">5</div>
+            <h4 data-i18n="flow5_h">Review</h4>
+            <p data-i18n="flow5_p">Outcome logged for analytics & planning</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CTA BAND ================= -->
+    <section class="bg-surface">
+      <div class="container">
+        <div class="cta-band">
+          <div>
+            <h2 data-i18n="cta_h2">Every second counts in an emergency.</h2>
+            <p data-i18n="cta_p">
+              Sign in to report, respond, or coordinate — all from one place.
+            </p>
+          </div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap">
+            <button
+              class="btn btn-accent"
+              onclick="openAuth()"
+              data-i18n="cta_btn1"
+            >
+              Login / Register
+            </button>
+            <button
+              class="btn btn-ghost"
+              style="color: #fff; border-color: rgba(255, 255, 255, 0.3)"
+              onclick="openAuth()"
+              data-i18n="cta_btn2"
+            >
+              Sign in
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="logo" style="margin-bottom: 14px">
+              <svg class="logo-mark" viewBox="0 0 40 40" fill="none">
+                <circle
+                  cx="20"
+                  cy="20"
+                  r="19"
+                  stroke="#1B4B91"
+                  stroke-width="2"
+                />
+                <path
+                  d="M20 8 L20 32 M8 20 L32 20"
+                  stroke="#1B4B91"
+                  stroke-width="2"
+                />
+                <circle cx="20" cy="20" r="6" fill="#E4572E" />
+              </svg>
+              <span data-i18n="brand">RescueSphere</span>
+            </div>
+            <p
+              style="
+                font-size: 13.5px;
+                color: var(--text-muted);
+                max-width: 260px;
+              "
+              data-i18n="footer_tagline"
+            >
+              Smart disaster response & resource allocation for citizens, rescue
+              teams and authorities.
+            </p>
+          </div>
+          <div>
+            <h5 data-i18n="footer_platform">Platform</h5>
+            <ul>
+              <li><a href="#modules" data-i18n="nav_modules">Modules</a></li>
+              <li><a href="#features" data-i18n="nav_features">Features</a></li>
+              <li><a href="#how" data-i18n="nav_how">How it works</a></li>
+            </ul>
+          </div>
+          <div>
+            <h5 data-i18n="footer_access">Access</h5>
+            <ul>
+              <li>
+                <a href="#" onclick="openAuth()" data-i18n="mod1_btn"
+                  >Login / Register</a
+                >
+              </li>
+              <li>
+                <a href="#" onclick="openAuth()" data-i18n="mod2_btn"
+                  >Rescue Team Login</a
+                >
+              </li>
+              <li>
+                <a href="#" onclick="openAuth()" data-i18n="mod3_btn"
+                  >Administrator Login</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h5 data-i18n="footer_helpline">Emergency Helplines</h5>
+            <ul>
+              <li>National Emergency — 112</li>
+              <li>Disaster Management — 1077</li>
+              <li>Ambulance — 108</li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span data-i18n="footer_copy"
+            >© 2026 RescueSphere. An MCA mini-project for disaster response
+            coordination.</span
+          >
+          <span data-i18n="footer_note">Built for demonstration purposes.</span>
+        </div>
+      </div>
+    </footer>
+
+   <!-- ================= AUTH MODAL (Login with Register Link) ================= -->
+<div class="modal-overlay" id="authOverlay" onclick="if (event.target === this) closeAuth();">
+  <div class="auth-modal">
+    <button class="auth-close" onclick="closeAuth()">✕</button>
+    <div class="auth-header">
+      <h3 id="authTitle" data-i18n="auth_title">Welcome to RescueSphere</h3>
+      <p id="authSubtitle" data-i18n="auth_subtitle">
+        Login to access your dashboard.
+      </p>
+    </div>
+    <div class="auth-body">
+
+      <!-- LOGIN FORM -->
+      <form id="loginForm" action="{{ url_for('main.login') }}" method="POST">
+        <div class="field">
+          <label data-i18n="lbl_email">Email Address</label>
+          <input type="email" name="email" required placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label data-i18n="lbl_password">Password</label>
+          <input type="password" name="password" required placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary auth-submit" type="submit" id="loginSubmitBtn" data-i18n="btn_login">
+          Log in
+        </button>
+        <div class="helper-row">
+          <a href="#" data-i18n="forgot_pw">Forgot password?</a>
+          <span>
+            <span data-i18n="no_account">New here?</span>
+            <a href="#" onclick="event.preventDefault(); showRegisterForm();" data-i18n="create_account">
+              Create an account
+            </a>
+          </span>
+        </div>
+      </form>
+
+      <!-- REGISTER FORM (Hidden by default - shown when "Create an account" is clicked) -->
+      <form id="registerForm" style="display:none;" action="{{ url_for('main.register') }}" method="POST">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h4 style="font-size:16px; color:var(--ink);">Create an Account</h4>
+          <a href="#" onclick="event.preventDefault(); hideRegisterForm();" style="color:var(--primary); font-weight:600; font-size:13px; cursor:pointer;">
+            ← Back to Login
+          </a>
+        </div>
+        
+        <div class="field">
+          <label data-i18n="lbl_fullname">Full Name</label>
+          <input type="text" name="fullname" required placeholder="Anjali Nair">
+        </div>
+        <div class="field">
+          <label data-i18n="lbl_phone">Phone Number</label>
+          <input type="tel" name="phone" required placeholder="+91 98765 43210">
+        </div>
+        <div class="field">
+          <label data-i18n="lbl_email">Email Address</label>
+          <input type="email" name="email" required placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label data-i18n="lbl_role">I want to register as</label>
+          <select name="role" required>
+            <option value="citizen" selected>Citizen</option>
+            <option value="rescue">Rescue Team Member</option>
+          </select>
+          <small style="color:var(--text-muted); font-size:12px; display:block; margin-top:4px;">
+            * Administrator accounts are created by the system only.
+          </small>
+        </div>
+        <div class="field" id="rescueOrgField" style="display:none;">
+          <label data-i18n="lbl_org">Organization / Department</label>
+          <input type="text" name="organization" placeholder="Kerala Fire & Rescue Services">
+        </div>
+        <div class="field">
+          <label data-i18n="lbl_password">Password</label>
+          <input type="password" name="password" required placeholder="••••••••">
+        </div>
+        <div class="field">
+          <label data-i18n="lbl_confirm_password">Confirm Password</label>
+          <input type="password" name="confirm_password" required placeholder="••••••••">
+        </div>
+        <button class="btn btn-accent auth-submit" type="submit" data-i18n="btn_register">
+          Create account
+        </button>
+        <div class="helper-row" style="justify-content:center;">
+          <span>
+            <span data-i18n="have_account">Already registered?</span>
+            <a href="#" onclick="event.preventDefault(); hideRegisterForm();" data-i18n="login_instead">
+              Log in
+            </a>
+          </span>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+<script>
+  // ---------------- AUTH MODAL LOGIC ----------------
+  let currentLang = 'en';
+
+  function openAuth() {
+    document.getElementById('authOverlay').classList.add('open');
+    showLoginForm();
+  }
+
+  function closeAuth() {
+    document.getElementById('authOverlay').classList.remove('open');
+    showLoginForm();
+  }
+
+  // Show login form (hide register)
+  function showLoginForm() {
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('authTitle').textContent = currentLang === 'ml' ? 'റെസ്ക്യൂസ്ഫിയറിലേക്ക് സ്വാഗതം' : 'Welcome to RescueSphere';
+    document.getElementById('authSubtitle').textContent = currentLang === 'ml' ? 'തുടരാൻ നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സൈൻ ഇൻ ചെയ്യുക.' : 'Login to access your dashboard.';
+  }
+
+  // Show register form (hide login)
+  function showRegisterForm() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'block';
+    document.getElementById('authTitle').textContent = currentLang === 'ml' ? 'അക്കൗണ്ട് സൃഷ്ടിക്കുക' : 'Create an Account';
+    document.getElementById('authSubtitle').textContent = currentLang === 'ml' ? 'സിസ്റ്റം ഉപയോഗിക്കാൻ രജിസ്റ്റർ ചെയ്യുക.' : 'Register to start using RescueSphere.';
+  }
+
+  // Hide register form (show login)
+  function hideRegisterForm() {
+    showLoginForm();
+  }
+
+  // Show organization field when rescue team is selected
+  document.addEventListener('DOMContentLoaded', function() {
+    const roleSelect = document.querySelector('select[name="role"]');
+    const orgField = document.getElementById('rescueOrgField');
+
+    if (roleSelect) {
+      roleSelect.addEventListener('change', function() {
+        orgField.style.display = this.value === 'rescue' ? 'block' : 'none';
+      });
+    }
+  });
+
+  // ---------------- LANGUAGE TOGGLE ----------------
+  const translations = {
+    en: {
+      brand: "RescueSphere",
+      nav_modules: "Modules",
+      nav_features: "Features",
+      nav_how: "How it works",
+      nav_report: "Report an emergency",
+      nav_login: "Log in",
+      nav_report_btn: "Report Emergency",
+      hero_eyebrow: "Live disaster coordination platform",
+      hero_h1: 'When every minute matters, <span class="hl">coordination saves lives.</span>',
+      hero_lead: "RescueSphere connects citizens, rescue teams, and disaster management authorities on one real-time platform — from the first emergency report to the last rescue update.",
+      hero_cta1: "Report an emergency",
+      hero_cta2: "Login to RescueSphere",
+      hero_cta3: "Sign in",
+      stat1: "Incident monitoring",
+      stat2: "Connected user roles",
+      stat3: "Report-to-alert time",
+      radar_title: "Live Incident Radar",
+      radar_live: "Live",
+      legend_critical: "Critical",
+      legend_moderate: "Moderate",
+      legend_resolved: "Resolved",
+      problem_h2: "Disaster response shouldn't depend on a phone call",
+      problem_p: "Traditional coordination is fragmented. RescueSphere replaces scattered calls and manual tracking with one connected system.",
+      existing_title: "Today, without RescueSphere",
+      lim1: "Delayed emergency reporting and communication",
+      lim2: "Manual, ad-hoc resource allocation",
+      lim3: "No centralized disaster monitoring",
+      lim4: "Difficulty prioritizing critical incidents",
+      lim5: "Poor coordination among rescue teams",
+      proposed_title: "With RescueSphere",
+      adv1: "Real-time disaster reporting with photos & GPS",
+      adv2: "AI-assisted resource recommendation engine",
+      adv3: "Centralized dashboard for every stakeholder",
+      adv4: "Automatic severity-based prioritization",
+      adv5: "Optimized routes & live mission tracking",
+      modules_h2: "One platform, three connected roles",
+      modules_p: "Every user signs in from the same door — the system knows who you are and shows you exactly what you need.",
+      mod1_tag: "Public user · Self-registration",
+      mod1_title: "Citizen",
+      mod1_desc: "Report emergencies, share your live location, and track help as it arrives.",
+      mod1_f1: "Report incidents with photos & GPS",
+      mod1_f2: "Track rescue team ETA & contact",
+      mod1_f3: "Find nearby shelters & relief centers",
+      mod1_f4: "Receive real-time alerts",
+      mod1_btn: "Login / Register",
+      mod2_tag: "Responder · Admin-issued credentials",
+      mod2_title: "Rescue Team",
+      mod2_desc: "Accept missions, navigate optimized routes, and report outcomes from the field.",
+      mod2_f1: "View & accept nearby assignments",
+      mod2_f2: "Navigate using optimized routes",
+      mod2_f3: "Update mission & casualty status",
+      mod2_f4: "Request additional resources",
+      mod2_btn: "Login",
+      mod3_tag: "EOC staff · Provisioned account only",
+      mod3_title: "Administrator",
+      mod3_desc: "Full oversight of incidents, resources, teams, and disaster analytics.",
+      mod3_f1: "Monitor all incidents in real time",
+      mod3_f2: "Allocate personnel, vehicles & supplies",
+      mod3_f3: "View heatmaps & disaster trend analytics",
+      mod3_f4: "Manage user accounts & permissions",
+      mod3_btn: "Login",
+      features_h2: "Built-in intelligence, not just reporting",
+      features_p: "Advanced engines work quietly in the background so responders can focus on the rescue.",
+      feat1_h: "Emergency Prioritization Engine",
+      feat1_p: "Automatically ranks incidents by severity, people affected, and location risk.",
+      feat2_h: "Resource Recommendation Engine",
+      feat2_p: "Suggests optimal deployment of teams, vehicles, medical staff and supplies.",
+      feat3_h: "Route Optimization",
+      feat3_p: "Calculates the fastest, safest paths for rescue teams to reach affected areas.",
+      feat4_h: "Disaster Heatmaps",
+      feat4_p: "Visualizes incident density and disaster intensity across affected regions.",
+      feat5_h: "Real-Time Analytics",
+      feat5_p: "Tracks incident frequency, response times, and resource utilization.",
+      feat6_h: "Shelter & Relief Locator",
+      feat6_p: "Shows nearby shelters, hospitals, and relief centers to affected citizens.",
+      how_h2: "From report to rescue",
+      how_p: "A single flow connects everyone involved in the response.",
+      flow1_h: "Report",
+      flow1_p: "Citizen submits location, photos & details",
+      flow2_h: "Prioritize",
+      flow2_p: "System scores severity & urgency instantly",
+      flow3_h: "Allocate",
+      flow3_p: "Admin assigns teams & resources",
+      flow4_h: "Respond",
+      flow4_p: "Rescue team navigates & updates status",
+      flow5_h: "Review",
+      flow5_p: "Outcome logged for analytics & planning",
+      cta_h2: "Every second counts in an emergency.",
+      cta_p: "Sign in to report, respond, or coordinate — all from one place.",
+      cta_btn1: "Login / Register",
+      cta_btn2: "Sign in",
+      footer_tagline: "Smart disaster response & resource allocation for citizens, rescue teams and authorities.",
+      footer_platform: "Platform",
+      footer_access: "Access",
+      footer_helpline: "Emergency Helplines",
+      footer_copy: "© 2026 RescueSphere. An MCA mini-project for disaster response coordination.",
+      footer_note: "Built for demonstration purposes.",
+      auth_title: "Welcome to RescueSphere",
+      auth_subtitle: "Login to access your dashboard or create a new account.",
+      toggle_login: "Log in",
+      toggle_register: "Register",
+      lbl_email: "Email Address",
+      lbl_password: "Password",
+      btn_login: "Log in",
+      forgot_pw: "Forgot password?",
+      no_account: "New here?",
+      create_account: "Create an account",
+      lbl_fullname: "Full Name",
+      lbl_phone: "Phone Number",
+      lbl_role: "I want to register as",
+      lbl_org: "Organization / Department",
+      lbl_confirm_password: "Confirm Password",
+      btn_register: "Create account",
+      have_account: "Already registered?",
+      login_instead: "Log in",
+      admin_note_text: "Administrator accounts are provisioned by the system — self-registration is not available. Please login with your system-issued credentials."
+    },
+    ml: {
+      brand: "റെസ്ക്യൂസ്ഫിയർ",
+      nav_modules: "മൊഡ്യൂളുകൾ",
+      nav_features: "സവിശേഷതകൾ",
+      nav_how: "എങ്ങനെ പ്രവർത്തിക്കുന്നു",
+      nav_report: "അടിയന്തരാവസ്ഥ റിപ്പോർട്ട് ചെയ്യുക",
+      nav_login: "ലോഗിൻ",
+      nav_report_btn: "അടിയന്തരാവസ്ഥ റിപ്പോർട്ട് ചെയ്യുക",
+      hero_eyebrow: "തത്സമയ ദുരന്ത ഏകോപന പ്ലാറ്റ്ഫോം",
+      hero_h1: 'ഓരോ നിമിഷവും വിലപ്പെട്ടതാകുമ്പോൾ, <span class="hl">ഏകോപനം ജീവൻ രക്ഷിക്കുന്നു.</span>',
+      hero_lead: "പൗരന്മാരെയും രക്ഷാ സംഘങ്ങളെയും ദുരന്ത നിവാരണ അധികാരികളെയും ഒരൊറ്റ തത്സമയ പ്ലാറ്റ്ഫോമിൽ റെസ്ക്യൂസ്ഫിയർ ബന്ധിപ്പിക്കുന്നു — ആദ്യ റിപ്പോർട്ട് മുതൽ അവസാന രക്ഷാ അപ്ഡേറ്റ് വരെ.",
+      hero_cta1: "അടിയന്തരാവസ്ഥ റിപ്പോർട്ട് ചെയ്യുക",
+      hero_cta2: "റെസ്ക്യൂസ്ഫിയറിലേക്ക് ലോഗിൻ",
+      hero_cta3: "സൈൻ ഇൻ",
+      stat1: "നിരീക്ഷണം",
+      stat2: "ബന്ധിപ്പിച്ച ഉപയോക്തൃ റോളുകൾ",
+      stat3: "റിപ്പോർട്ട്-മുതൽ-അലേർട്ട് സമയം",
+      radar_title: "തത്സമയ സംഭവ റഡാർ",
+      radar_live: "തത്സമയം",
+      legend_critical: "ഗുരുതരം",
+      legend_moderate: "ഇടത്തരം",
+      legend_resolved: "പരിഹരിച്ചു",
+      problem_h2: "ദുരന്ത പ്രതികരണം ഒരു ഫോൺ കോളിനെ ആശ്രയിക്കേണ്ടതില്ല",
+      problem_p: "പരമ്പരാഗത ഏകോപനം ശിഥിലമാണ്. ചിതറിയ കോളുകൾക്കും മാനുവൽ ട്രാക്കിംഗിനും പകരം റെസ്ക്യൂസ്ഫിയർ ഒരൊറ്റ ബന്ധിത സംവിധാനം നൽകുന്നു.",
+      existing_title: "ഇന്ന്, റെസ്ക്യൂസ്ഫിയർ ഇല്ലാതെ",
+      lim1: "വൈകിയ അടിയന്തര റിപ്പോർട്ടിംഗും ആശയവിനിമയവും",
+      lim2: "മാനുവൽ വിഭവ വിതരണം",
+      lim3: "കേന്ദ്രീകൃത നിരീക്ഷണം ഇല്ല",
+      lim4: "ഗുരുതരമായ സംഭവങ്ങൾ മുൻഗണന നൽകാൻ ബുദ്ധിമുട്ട്",
+      lim5: "രക്ഷാ സംഘങ്ങൾ തമ്മിലുള്ള മോശം ഏകോപനം",
+      proposed_title: "റെസ്ക്യൂസ്ഫിയർ ഉപയോഗിച്ച്",
+      adv1: "ഫോട്ടോകളും ജിപിഎസും ഉള്ള തത്സമയ റിപ്പോർട്ടിംഗ്",
+      adv2: "എഐ സഹായത്തോടെയുള്ള വിഭവ ശുപാർശ എഞ്ചിൻ",
+      adv3: "എല്ലാവർക്കുമായി കേന്ദ്രീകൃത ഡാഷ്ബോർഡ്",
+      adv4: "തീവ്രത അടിസ്ഥാനമാക്കിയുള്ള സ്വയമേവ മുൻഗണന",
+      adv5: "ഒപ്റ്റിമൈസ് ചെയ്ത റൂട്ടുകളും തത്സമയ മിഷൻ ട്രാക്കിംഗും",
+      modules_h2: "ഒരു പ്ലാറ്റ്ഫോം, മൂന്ന് ബന്ധിത റോളുകൾ",
+      modules_p: "എല്ലാ ഉപയോക്താക്കളും ഒരേ വാതിലിലൂടെ സൈൻ ഇൻ ചെയ്യുന്നു — സിസ്റ്റത്തിന് നിങ്ങൾ ആരാണെന്ന് അറിയാം.",
+      mod1_tag: "പൊതു ഉപയോക്താവ് · സ്വയം രജിസ്ട്രേഷൻ",
+      mod1_title: "പൗരൻ",
+      mod1_desc: "അടിയന്തരാവസ്ഥകൾ റിപ്പോർട്ട് ചെയ്യുക, നിങ്ങളുടെ തത്സമയ ലൊക്കേഷൻ പങ്കിടുക, സഹായം ട്രാക്ക് ചെയ്യുക.",
+      mod1_f1: "ഫോട്ടോകളും ജിപിഎസും സഹിതം സംഭവങ്ങൾ റിപ്പോർട്ട് ചെയ്യുക",
+      mod1_f2: "രക്ഷാ സംഘത്തിന്റെ ETA & കോൺടാക്റ്റ് ട്രാക്ക് ചെയ്യുക",
+      mod1_f3: "സമീപത്തെ അഭയകേന്ദ്രങ്ങൾ കണ്ടെത്തുക",
+      mod1_f4: "തത്സമയ അലേർട്ടുകൾ സ്വീകരിക്കുക",
+      mod1_btn: "ലോഗിൻ / രജിസ്റ്റർ",
+      mod2_tag: "പ്രതികരണക്കാരൻ · അഡ്മിൻ നൽകുന്ന ക്രെഡൻഷ്യൽ",
+      mod2_title: "രക്ഷാ സംഘം",
+      mod2_desc: "ദൗത്യങ്ങൾ സ്വീകരിക്കുക, ഒപ്റ്റിമൈസ് ചെയ്ത റൂട്ടുകൾ ഉപയോഗിച്ച് നാവിഗേറ്റ് ചെയ്യുക.",
+      mod2_f1: "സമീപത്തെ അസൈൻമെന്റുകൾ കാണുകയും സ്വീകരിക്കുകയും ചെയ്യുക",
+      mod2_f2: "ഒപ്റ്റിമൈസ് ചെയ്ത റൂട്ടുകൾ ഉപയോഗിക്കുക",
+      mod2_f3: "മിഷൻ & കാഷ്വൽറ്റി സ്റ്റാറ്റസ് അപ്ഡേറ്റ് ചെയ്യുക",
+      mod2_f4: "അധിക വിഭവങ്ങൾ അഭ്യർത്ഥിക്കുക",
+      mod2_btn: "ലോഗിൻ",
+      mod3_tag: "EOC സ്റ്റാഫ് · നൽകിയ അക്കൗണ്ട് മാത്രം",
+      mod3_title: "അഡ്മിനിസ്ട്രേറ്റർ",
+      mod3_desc: "സംഭവങ്ങൾ, വിഭവങ്ങൾ, സംഘങ്ങൾ, അനാലിറ്റിക്സ് എന്നിവയുടെ പൂർണ്ണ മേൽനോട്ടം.",
+      mod3_f1: "എല്ലാ സംഭവങ്ങളും തത്സമയം നിരീക്ഷിക്കുക",
+      mod3_f2: "ജീവനക്കാരെയും വാഹനങ്ങളെയും വിഭവങ്ങളെയും വിതരണം ചെയ്യുക",
+      mod3_f3: "ഹീറ്റ്മാപ്പുകളും ട്രെൻഡ് അനാലിറ്റിക്സും കാണുക",
+      mod3_f4: "ഉപയോക്തൃ അക്കൗണ്ടുകൾ കൈകാര്യം ചെയ്യുക",
+      mod3_btn: "ലോഗിൻ",
+      features_h2: "അന്തർനിർമ്മിത ബുദ്ധി, റിപ്പോർട്ടിംഗ് മാത്രമല്ല",
+      features_p: "നൂതന എഞ്ചിനുകൾ പശ്ചാത്തലത്തിൽ പ്രവർത്തിക്കുന്നു, പ്രതികരണക്കാർക്ക് രക്ഷാപ്രവർത്തനത്തിൽ ശ്രദ്ധ കേന്ദ്രീകരിക്കാം.",
+      feat1_h: "അടിയന്തര മുൻഗണന എഞ്ചിൻ",
+      feat1_p: "തീവ്രത, ബാധിതരുടെ എണ്ണം, സ്ഥാന അപകടസാധ്യത എന്നിവയാൽ സംഭവങ്ങൾ റാങ്ക് ചെയ്യുന്നു.",
+      feat2_h: "വിഭവ ശുപാർശ എഞ്ചിൻ",
+      feat2_p: "സംഘങ്ങൾ, വാഹനങ്ങൾ, മെഡിക്കൽ സ്റ്റാഫ് എന്നിവയുടെ മികച്ച വിന്യാസം നിർദ്ദേശിക്കുന്നു.",
+      feat3_h: "റൂട്ട് ഒപ്റ്റിമൈസേഷൻ",
+      feat3_p: "രക്ഷാ സംഘങ്ങൾക്ക് ബാധിത പ്രദേശങ്ങളിലേക്കുള്ള ഏറ്റവും വേഗതയേറിയ റൂട്ടുകൾ കണക്കാക്കുന്നു.",
+      feat4_h: "ദുരന്ത ഹീറ്റ്മാപ്പുകൾ",
+      feat4_p: "ബാധിത പ്രദേശങ്ങളിലുടനീളമുള്ള സംഭവ സാന്ദ്രത ദൃശ്യവൽക്കരിക്കുന്നു.",
+      feat5_h: "തത്സമയ അനാലിറ്റിക്സ്",
+      feat5_p: "സംഭവ ആവൃത്തി, പ്രതികരണ സമയം, വിഭവ വിനിയോഗം എന്നിവ ട്രാക്ക് ചെയ്യുന്നു.",
+      feat6_h: "അഭയകേന്ദ്ര കണ്ടെത്തൽ",
+      feat6_p: "സമീപത്തെ അഭയകേന്ദ്രങ്ങളും ആശുപത്രികളും കാണിക്കുന്നു.",
+      how_h2: "റിപ്പോർട്ട് മുതൽ രക്ഷാപ്രവർത്തനം വരെ",
+      how_p: "ഒരൊറ്റ പ്രവാഹം എല്ലാവരെയും ബന്ധിപ്പിക്കുന്നു.",
+      flow1_h: "റിപ്പോർട്ട്",
+      flow1_p: "പൗരൻ ലൊക്കേഷനും ഫോട്ടോകളും സമർപ്പിക്കുന്നു",
+      flow2_h: "മുൻഗണന",
+      flow2_p: "സിസ്റ്റം തീവ്രത തൽക്ഷണം സ്കോർ ചെയ്യുന്നു",
+      flow3_h: "വിതരണം",
+      flow3_p: "അഡ്മിൻ സംഘങ്ങളെയും വിഭവങ്ങളെയും നിയോഗിക്കുന്നു",
+      flow4_h: "പ്രതികരണം",
+      flow4_p: "രക്ഷാ സംഘം നാവിഗേറ്റ് ചെയ്ത് സ്റ്റാറ്റസ് അപ്ഡേറ്റ് ചെയ്യുന്നു",
+      flow5_h: "അവലോകനം",
+      flow5_p: "ഫലം അനാലിറ്റിക്സിനായി രേഖപ്പെടുത്തുന്നു",
+      cta_h2: "അടിയന്തരാവസ്ഥയിൽ ഓരോ നിമിഷവും വിലപ്പെട്ടതാണ്.",
+      cta_p: "റിപ്പോർട്ട് ചെയ്യാനോ പ്രതികരിക്കാനോ ഏകോപിപ്പിക്കാനോ സൈൻ ഇൻ ചെയ്യുക.",
+      cta_btn1: "ലോഗിൻ / രജിസ്റ്റർ",
+      cta_btn2: "സൈൻ ഇൻ",
+      footer_tagline: "പൗരന്മാർക്കും രക്ഷാ സംഘങ്ങൾക്കും അധികാരികൾക്കും വേണ്ടിയുള്ള സ്മാർട്ട് ദുരന്ത പ്രതികരണ സംവിധാനം.",
+      footer_platform: "പ്ലാറ്റ്ഫോം",
+      footer_access: "ആക്സസ്",
+      footer_helpline: "അടിയന്തര ഹെൽപ്‌ലൈനുകൾ",
+      footer_copy: "© 2026 റെസ്ക്യൂസ്ഫിയർ. ദുരന്ത പ്രതികരണ ഏകോപനത്തിനുള്ള ഒരു MCA മിനി പ്രോജക്ട്.",
+      footer_note: "പ്രദർശന ആവശ്യങ്ങൾക്കായി നിർമ്മിച്ചത്.",
+      auth_title: "റെസ്ക്യൂസ്ഫിയറിലേക്ക് സ്വാഗതം",
+      auth_subtitle: "നിങ്ങളുടെ ഡാഷ്ബോർഡ് ആക്സസ് ചെയ്യാൻ ലോഗിൻ ചെയ്യുക.",
+      toggle_login: "ലോഗിൻ",
+      toggle_register: "രജിസ്റ്റർ",
+      lbl_email: "ഇമെയിൽ വിലാസം",
+      lbl_password: "പാസ്‌വേഡ്",
+      btn_login: "ലോഗിൻ",
+      forgot_pw: "പാസ്‌വേഡ് മറന്നോ?",
+      no_account: "പുതിയ ആളാണോ?",
+      create_account: "അക്കൗണ്ട് സൃഷ്ടിക്കുക",
+      lbl_fullname: "മുഴുവൻ പേര്",
+      lbl_phone: "ഫോൺ നമ്പർ",
+      lbl_role: "ഞാൻ രജിസ്റ്റർ ചെയ്യാൻ ആഗ്രഹിക്കുന്നത്",
+      lbl_org: "സ്ഥാപനം / വകുപ്പ്",
+      lbl_confirm_password: "പാസ്‌വേഡ് സ്ഥിരീകരിക്കുക",
+      btn_register: "അക്കൗണ്ട് സൃഷ്ടിക്കുക",
+      have_account: "ഇതിനകം രജിസ്റ്റർ ചെയ്തിട്ടുണ്ടോ?",
+      login_instead: "ലോഗിൻ ചെയ്യുക",
+      admin_note_text: "അഡ്മിനിസ്ട്രേറ്റർ അക്കൗണ്ടുകൾ സിസ്റ്റം നൽകുന്നു — സ്വയം രജിസ്ട്രേഷൻ ലഭ്യമല്ല. സിസ്റ്റം നൽകിയ ക്രെഡൻഷ്യലുകൾ ഉപയോഗിച്ച് ലോഗിൻ ചെയ്യുക."
+    }
+  };
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+    document.getElementById('lang-ml').classList.toggle('active', lang === 'ml');
+    document.documentElement.lang = lang;
+    
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+      const key = el.getAttribute('data-i18n');
+      if (translations[lang] && translations[lang][key] !== undefined) {
+        el.innerHTML = translations[lang][key];
+      }
+    });
+    
+    document.body.style.fontFamily = lang === 'ml' ? "'Noto Sans Malayalam','Inter',sans-serif" : 'var(--font-body)';
+
+    // Update modal titles based on current visible form
+    const titleEl = document.getElementById('authTitle');
+    const subEl = document.getElementById('authSubtitle');
+    const isRegisterVisible = document.getElementById('registerForm').style.display === 'block';
+    
+    if (isRegisterVisible) {
+      titleEl.textContent = lang === 'ml' ? 'അക്കൗണ്ട് സൃഷ്ടിക്കുക' : 'Create an Account';
+      subEl.textContent = lang === 'ml' ? 'സിസ്റ്റം ഉപയോഗിക്കാൻ രജിസ്റ്റർ ചെയ്യുക.' : 'Register to start using the system.';
+    } else {
+      titleEl.textContent = lang === 'ml' ? 'റെസ്ക്യൂസ്ഫിയറിലേക്ക് സ്വാഗതം' : 'Welcome to RescueSphere';
+      subEl.textContent = lang === 'ml' ? 'തുടരാൻ നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സൈൻ ഇൻ ചെയ്യുക.' : 'Login to access your dashboard.';
+    }
+  }
+</script>
+  </body>
+</html>
